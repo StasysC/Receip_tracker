@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- REACT LIBRARY -->
+  <script src="https://unpkg.com/react@15.5.4/dist/react.js"></script>
+  <!-- REACT DOM LIBRARY -->
+  <script src="https://unpkg.com/react-dom@15.5.4/dist/react-dom.js"></script>
+  <!-- BABEL LIBRARY -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
+  <title>iGeolise task</title>
+</head>
+<body>
+  <div id="app">React app not rendered yet</div>
+  <script type="text/babel">
+
+    class ExpenseInput extends React.Component{
+      constructor(props){
+        super(props);
+        this.state={
+          value: ""
+        }
+        this.handleChange=this.handleChange.bind(this);
+      }
+
+      handleChange(event){
+        this.setState({
+          value: event.target.value
+        });
+        //console.log(this.state.value)
+      }
+
+      render(){
+        return(
+          <div>
+            <form  style={{marginBottom: 5}}>
+              <input type="text" style={{
+                width: 200,
+                borderRadius: 5,
+                marginLeft: 10,
+                marginRight: 15
+              }}></input>
+              <input type="text" value={this.state.value}
+               onChange={this.handleChange}
+                style={{
+                borderRadius: 5,
+                width: 50
+              }}></input>
+            </form>
+          </div>
+        );
+      }
+    }
+
+    class Receipt extends React.Component {
+      constructor(props){
+        super(props);
+        this.state ={
+          id: 0,
+          food: "food",
+          houseware: "houseware",
+          entertainment: "entertainment",
+          expenses: 0,
+          expenseInput: [],
+          foodEuros: 0,
+          housewareEuros: 0,
+          entertainmentEuros: 0
+        }
+        this.onButtonAddExpense=this.onButtonAddExpense.bind(this);
+      }
+
+      onButtonAddExpense(){
+        this.setState({
+          expenseInput: [this.state.expenseInput,<ExpenseInput/>]
+        })
+        // console.log(this.state.expenseInput)
+      }
+      render(){
+        var receiptStyle={
+          width: 290,
+          borderStyle: "solid",
+          borderWidth: 0.5,
+          backgroundColor: "#e6ffe6",
+          margin: 5
+        }
+        return(
+          <div style={receiptStyle}>
+            <div>
+              <select style={{ margin: 10}}>
+                <option value={this.food}>Food</option>
+                <option value={this.houseware}>Houseware</option>
+                <option value={this.entertainment}>Entertainment</option>
+              </select>
+              <button onClick={this.onButtonAddExpense} style={{marginLeft:60}} >
+                Add expense
+              </button>
+            </div>
+            <div>
+              {this.state.expenseInput}
+            </div>
+            <div style={{margin: 10}}>
+              {this.state.input}
+            </div>
+            <div style={{margin: 10}}>
+              Total: {this.state.foodEuros} €
+            </div>
+          </div>
+        );
+      }
+    }
+
+    class MainScreen extends React.Component{
+      constructor(props){
+        super(props);
+        this.state ={
+          receipts: [],
+          totalEuros: 0,
+          width: 300,
+          key: 0
+        }
+        this.onButtonCreateReceipt=this.onButtonCreateReceipt.bind(this);
+        this.incrementKey=this.incrementKey.bind(this);
+      }
+      onButtonCreateReceipt(){
+        this.incrementKey();
+        this.setState({
+          receipts: [this.state.receipts, <Receipt/>]
+        })
+        // console.log(this.state.key)
+      }
+
+      incrementKey(){
+        this.setState({
+          key: this.state.key +1
+        })
+      }
+      render(){
+        var appStyle={
+          height: 500,
+          width: 300,
+          borderStyle: "solid",
+          borderWidth: 1,
+        }
+        var bottomStyle = {
+          float: "left",
+          width: appStyle.width/3,marginTop: 5,
+          textAlign: "center"
+        }
+        // var key = this.state.key
+        // var receiptsList = this.state.receipts.map(function(single){
+        //   var keyId= this.state.key
+        //   return <div key={keyId}>{single}</div>
+        // });
+
+        return(
+          <div style={appStyle}>
+            <div style={{
+              overflowY:"auto",
+              overflowX: "hidden",
+              height: 450,
+              width: 320
+            }}>
+              {this.state.receipts}
+            </div>
+            <div style={{position: "fixed", top: appStyle.height-50}}>
+              <hr/>
+              <div style={bottomStyle}>
+                Total:
+              </div>
+              <div style={bottomStyle} >{this.props.expenseInput.value} €</div>
+              <div style={bottomStyle}>
+                <button onClick={this.onButtonCreateReceipt}>Add receipt</button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    class App extends React.Component{
+      render(){
+        return(
+          <div>
+            <MainScreen
+            receipt={Receipt}
+            expenseInput={ExpenseInput}
+            />
+
+          </div>
+        );
+      }
+    }
+    ReactDOM.render(
+      <App/>
+      ,document.getElementById("app")
+    );
+  </script>
+</body>
+</html>
